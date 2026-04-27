@@ -6,7 +6,7 @@ from encrypted_model_fields.fields import EncryptedCharField
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profiel')
-    geboortedafum = models.DateField(null=True, blank=True)
+    geboortedatum = models.DateField(null=True, blank=True)
     telefoon = models.CharField(max_length=20, blank=True)
     adres = models.TextField(blank=True)
     allergiëen = models.TextField(blank=True)
