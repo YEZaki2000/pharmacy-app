@@ -16,7 +16,7 @@ class Prescription(models.Model):
     arts_naam = models.CharField(max_length=200)
     arts_telefoon = models.CharField(max_length=20)
     datum = models.DateField()
-    notities = models.TextField()
+    notities = models.TextField(blank=True)
     aangemaakt_op = models.DateTimeField(auto_now_add=True)
     bijgewerkt_op = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NIEUW)
@@ -31,7 +31,7 @@ class Prescription(models.Model):
 
 
 class PrescriptionItem(models.Model):
-    recept = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='Regels')
+    recept = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='regels')
     medicijn = models.ForeignKey(Medicine, on_delete=models.PROTECT)
     hoeveelheid = models.PositiveIntegerField()
     instructies = models.TextField(blank=True) # bijv. 2x per dag na het eten

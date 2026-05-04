@@ -33,7 +33,7 @@ class Medicine(models.Model):
     naam = models.CharField(max_length=200)
     dosering = models.CharField(max_length=200) # bijv. 500mg
     categorie = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    leverancier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True),
+    leverancier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True)
     voorraad = models.PositiveIntegerField(default=0)
     minimum_voorraad = models.PositiveIntegerField(default=10) # voor waarschuwing
     prijs = models.DecimalField(max_digits=8, decimal_places=2)
@@ -43,14 +43,14 @@ class Medicine(models.Model):
     vereist_recept = models.BooleanField(default=False)
 
     @property
-    def voorraad_laag():
+    def voorraad_laag(self):
         return self.voorraad <= self.minimum_voorraad
 
     def __str__(self):
         return f"{self.naam} {self.dosering}"
 
     class Meta:
-        verbose_name = 'Medecijn'
-        verbose_name_plural = 'Medecijnen'
+        verbose_name = 'Medicijn'
+        verbose_name_plural = 'Medicijnen'
 
 
