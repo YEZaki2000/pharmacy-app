@@ -16,6 +16,17 @@ from core.permissions import IsPharmacistOrReadOnly
 
 # Medicine viewset
 class MedicineViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet voor medicijnbeheer.
+    
+    list: Haal alle medicijnen op (met paginering, zoeken en filteren)
+    create: Maak een nieuw medicijn aan (alleen apothekers)
+    retrieve: Haal een specifiek medicijn op
+    update: Werk een medicijn bij (alleen apothekers)
+    destroy: Verwijder een medicijn (alleen apothekers)
+    low_stock: Haal medicijnen met lage voorraad op
+    add_stock: Verhoog de voorraad van een medicijn
+    """
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
     permission_classes = [IsPharmacistOrReadOnly]

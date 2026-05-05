@@ -43,6 +43,59 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['aangemaakt_op', 'bijgewerkt_op']
 
+    def validate_status(self, value):
+        """
+        Valideer dat statusovergangen logisch zijn
+        """
+        if not self.instance:  # Nieuw recept
+            # Nieuwe recepten moeten status 'nieuw' hebben
+            if value != Prescription.Status.NIEUW:
+                raise serializers.ValidationError(
+                    "Nieuwe recepten moeten status 'nieuw' hebben"
+                )
+            return value
+        
+        # Bij update: check oude status
+        oude_status = self.instance.status
+        
+        # Geannuleerde recepten kunnen niet meer gewijzigd worden
+        if oude_status == Prescription.Status.GEANNULEERD:
+            raise serializers.ValidationError(
+                "Een geannuleerd recept kan niet meer worden gewijzigd"
+            )
+        
+        # Uitgeleverde recepten kunnen niet terug
+        if oude_status == Prescription.Status.UITGELEVERD:
+            if value != Prescription.Status.UITGELEVERD:
+                raise serializers.ValidationError(
+                    "Een uitgeleverd recept kan niet terug worden gezet"
+                )
+        
+        # Geldige statusovergangen
+        ALLOWED_TRANSITIONS = {
+            Prescription.Status.NIEUW: [
+                Prescription.Status.IN_BEHANDELING,
+                Prescription.Status.GEANNULEERD
+            ],
+            Prescription.Status.IN_BEHANDELING: [
+                Prescription.Status.KLAAR,
+                Prescription.Status.GEANNULEERD
+            ],
+            Prescription.Status.KLAAR: [
+                Prescription.Status.UITGELEVERD,
+                Prescription.Status.GEANNULEERD
+            ],
+        }
+        
+        allowed = ALLOWED_TRANSITIONS.get(oude_status, [])
+        if value != oude_status and value not in allowed:
+            raise serializers.ValidationError(
+                f"Overgang van '{oude_status}' naar '{value}' is niet toegestaan. "
+                f"Toegestane statussen: {', '.join(allowed)}"
+            )
+        
+        return value
+
 
 
 
