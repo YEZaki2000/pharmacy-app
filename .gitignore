@@ -16,3 +16,6 @@ staticfiles/
 #Editor
 .vscode/
 .idea/
+
+# Voeg toe aan je bestaande .gitignore
+postgres_data/
